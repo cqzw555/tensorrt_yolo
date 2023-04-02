@@ -1,0 +1,7 @@
+# file
+*.trt
+*.onnx
+
+#directory
+.vscode
+build
