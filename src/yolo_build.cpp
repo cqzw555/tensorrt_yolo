@@ -60,6 +60,10 @@ int main(int agrc, char **argv)
         outputs.push_back(network->getOutput(i));
     auto previous_output = outputs[0];
 
+     Dims3 starts{0, 0, 0};
+    Dims3 strides{1, 1, 1};
+
+#ifdef YOLOV8
     // previous_output的初始形状为 (1,84,8400)
     auto shuffleLayer = network->addShuffle(*previous_output);
     shuffleLayer->setSecondTranspose(nvinfer1::Permutation{0, 2, 1});
@@ -70,28 +74,35 @@ int main(int agrc, char **argv)
     // 形状定义，起始点，步长
     auto dim = shuffleLayer->getOutput(0)->getDimensions();
     Dims3 shapes{dim.d[0], dim.d[1], 4};
-    Dims3 starts{0, 0, 0};
-    Dims3 strides{1, 1, 1};
-    auto boxLayer = network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
+    auto boxLayer =
+      network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
+    auto box = network->addShuffle(*boxLayer->getOutput(0));
+    box->setReshapeDimensions(Dims4{0, 0, 1, 4});
+    starts.d[2] = 4;
+    shapes.d[2] = dim.d[2] - 4;
+    auto scorelayer =
+      network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
+    cout << "extract box and scores done" << endl;
+#elif defined(YOLOV5)
+    // 对于yolov5 输出初始形状为(1,25200,85) 就不用变换了
+    auto dim = previous_output->getDimensions();
+    Dims3 shapes{dim.d[0], dim.d[1], 4};
+    auto boxLayer = network->addSlice(*previous_output, starts, shapes, strides);
+
     auto box = network->addShuffle(*boxLayer->getOutput(0));
     box->setReshapeDimensions(Dims4{0, 0, 1, 4});
 
-    // 置信度 提取
-#ifdef YOLOV8
-    starts.d[2] = 4;
-    shapes.d[2] = dim.d[2] - 4;
-    auto scorelayer = network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
-    cout << "extract box and scores done" << endl;
-#elif defined(YOLOV5)
     starts.d[2] = 4;
     shapes.d[2] = 1;
-    auto objlayer = network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
+    auto objlayer = network->addSlice(*previous_output, starts, shapes, strides);
 
     starts.d[2] = 5;
     shapes.d[2] = dim.d[2] - 5;
-    auto objscorelayer = network->addSlice(*shuffleLayer->getOutput(0), starts, shapes, strides);
-    auto scorelayer = network->addElementWise(*objlayer->getOutput(0), *objscorelayer->getOutput(0),
-                                              nvinfer1::ElementWiseOperation::kPROD);
+    auto objscorelayer =
+      network->addSlice(*previous_output, starts, shapes, strides);
+    auto scorelayer = network->addElementWise(
+      *objlayer->getOutput(0), *objscorelayer->getOutput(0),
+      nvinfer1::ElementWiseOperation::kPROD);
     cout << "extract box and scores done" << endl;
 #endif
 
