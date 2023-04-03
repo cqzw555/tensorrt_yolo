@@ -35,6 +35,10 @@ yolo::yolo(string trtFile, bool end2end)
 
 yolo::~yolo()
 {
+    delete this->buffers;
+    this->context.reset();
+    this->engine.reset();
+    this->runtime.reset();
 }
 
 void yolo::copy_from_Mat_CPU(cv::Mat &img)
@@ -108,10 +112,6 @@ void yolo::draw_objects(cv::Mat &frame, vector<Detection> &bboxs, const vector<v
     }
 }
 
-void yolo::draw_objects(cv::Mat &frame, vector<Detection> &bboxs)
-{
-    return;
-}
 
 inline cv::Mat yolo::letterbox(cv::Mat &src)
 {
