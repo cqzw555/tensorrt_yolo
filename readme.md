@@ -35,5 +35,6 @@
 - ubuntu18 cuda-11-8 tensorrt 8.5.3.1 cudnn 8.6 从[cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/)处下载 测试可以运行
 
 - wsl ubuntu20.04 cuda-12.1 (windows端 cuda12.1) [cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/wsl-ubuntu)处下载 cudnn8.8 tensorrt8.6 EA 需要手动将common文件夹替换成TensorRT下的release/8.6分支 可以运行 速度和纯ubuntu18下无明显速度区别。
+  
   ps. 原本windows上cuda是11.8的，wsl也是，但是编译成功后，需要链接libcudaLt.so.12，不知道原因，所以装12.1的cuda，保持版本一致。
   另外在wsl上跑的原因是我测试其他yolo模型方便，ubuntu18里一直没配成功过
