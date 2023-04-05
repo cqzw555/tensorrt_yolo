@@ -53,4 +53,4 @@
 
 - **build**程序需要将所有的参数都输入进去，确保模型转换正确
 
-  eg:./build -i yolov5l.onnx -o=yolov5l_plugin.trt -v=5 -n=80 --EfficientNMS
+  eg:./build -i=yolov5l.onnx -o=yolov5l_plugin.trt -v=5 -n=80 --EfficientNMS
