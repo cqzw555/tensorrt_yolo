@@ -1,5 +1,13 @@
 # tensorrt_yolo
-一个将yolov8模型转化成tensorrt引擎并运行的示例代码，
+
+一个将yolo 模型转化成tensorrt引擎并运行的示例代码。
+
+现在支持的yolo版本：
+
+- yolov5:[github/ultralytics](https://github.com/ultralytics/yolov5)
+
+- yolov8:[github/ultralytics](https://github.com/ultralytics/ultralytics)
+
 
 ## 已完成：
 
@@ -26,15 +34,23 @@
 
 ## 文件结构
 
-- src：程序以及头文件源码
+- **src**：程序以及头文件源码
 
-- common: comes from [github/TensorRT](https://github.com/NVIDIA/TensorRT/tree/release/8.6/samples/common)
+- **src/options.h**: 解析命令行的库，来自[github/absop](https://github.com/absop/ThreadPool/blob/main/Options.h)
+
+- **common**: comes from [github/TensorRT](https://github.com/NVIDIA/TensorRT/tree/release/8.6/samples/common)
 
 ## 运行平台
 
-- ubuntu18 cuda-11-8 tensorrt 8.5.3.1 cudnn 8.6 从[cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/)处下载 测试可以运行
+- **ubuntu18**: cuda-11-8 tensorrt 8.5.3.1 cudnn 8.6 从[cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/)处下载 测试可以运行
 
-- wsl ubuntu20.04 cuda-12.1 (windows端 cuda12.1) [cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/wsl-ubuntu)处下载 cudnn8.8 tensorrt8.6 EA 需要手动将common文件夹替换成TensorRT下的release/8.6分支 可以运行 速度和纯ubuntu18下无明显速度区别。
+- **wsl ubuntu20.04**: cuda-12.1 (windows端 cuda12.1) [cuda/repos](https://developer.download.nvidia.cn/compute/cuda/repos/wsl-ubuntu)处下载 cudnn8.8 tensorrt8.6 EA 需要手动将common文件夹替换成TensorRT下的release/8.6分支 可以运行 速度和纯ubuntu18下无明显速度区别。
   
-  ps. 原本windows上cuda是11.8的，wsl也是，但是编译成功后，需要链接libcudaLt.so.12，不知道原因，所以装12.1的cuda，保持版本一致。
+  **PS**. 原本windows上cuda是11.8的，wsl也是，但是编译成功后，需要链接libcudaLt.so.12，不知道原因，所以装12.1的cuda，保持版本一致。
   另外在wsl上跑的原因是我测试其他yolo模型方便，ubuntu18里一直没配成功过
+
+## 用法
+
+- **build**程序需要将所有的参数都输入进去，确保模型转换正确
+
+  eg:./build -i yolov5l.onnx -o=yolov5l_plugin.trt -v=5 -n=80 --EfficientNMS
