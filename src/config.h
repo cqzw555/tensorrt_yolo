@@ -1,13 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define USING_EFFICIENTNMS_TRT
-// #define USING_BatchedNMS_TRT
-// #define USING_NMS // don't use
-
-#define YOLOV8
-// #define YOLOV5
-
 static int kInputH = 640;
 static int kInputW = 640;
 
