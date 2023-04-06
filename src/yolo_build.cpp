@@ -154,8 +154,8 @@ static Options options = Options({"Usage: build [options...]",
                                   "  -(h|-help)                       print the message and exit",
                                   "",
                                   "Examples:",
-                                  " ./build -i yolov5l.onnx -o=yolov5l_plugin.trt -v=5 -n=80 --EfficientNMS",
-                                  " ./build -i yolov8l.onnx -o=yolov8l_plugin.trt -v=8 -n=80 --EfficientNMS"});
+                                  " ./build -i=yolov5l.onnx -o=yolov5l_plugin.trt -v=5 -n=80 --EfficientNMS",
+                                  " ./build -i=yolov8l.onnx -o=yolov8l_plugin.trt -v=8 -n=80 --EfficientNMS"});
 
 int main(int agrc, char *argv[])
 {
